@@ -1,6 +1,6 @@
 # 多元回归和R语言作业-点击率预测
 
-数据集在https://pan.baidu.com/s/1mhQyFuK下载
+数据集在https://pan.baidu.com/s/1mhQyFuK 下载
 
 程序文件为homework.R
 数据预处理文件convert.php（这个文件可以不管）
