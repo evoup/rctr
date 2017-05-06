@@ -2,7 +2,7 @@
 #dataset download https://pan.baidu.com/s/1mhQyFuK
 
 mydir = "/home/evoup/project/rctr/"
-inst_pkgs = load_pkgs =  c("ff","ffbase","biglm")
+inst_pkgs = load_pkgs =  c("ff","ffbase","biglm","ggplot2","ggthemes")
 inst_pkgs = inst_pkgs[!(inst_pkgs %in% installed.packages()[,"Package"])]
 if(length(inst_pkgs)) install.packages(inst_pkgs)
 pkgs_loaded = lapply(load_pkgs, require, character.only=T)
@@ -76,4 +76,25 @@ fitted.results <- ifelse(fitted.results > 0.000387,1,0)
 misClasificError <- mean(fitted.results != data_test_clicked$isClicked)
 print(paste('Accuracy',1-misClasificError))
 
+
+data$prediction <- predict( model_reduce, newdata = data, type = "response" )
+ggplot( data, aes( prediction, color = as.factor(isClicked) ) ) + 
+  geom_density( size = 1 ) +
+  ggtitle( "Training Set's Predicted Score" ) + 
+  scale_color_economist( name = "data", labels = c( "negative", "positive" ) ) + 
+  theme_economist()
+
+
+
+names(test.data.raw)= column_names
+data_test <- subset(as.data.frame(test.data.raw),select=c(2,5,9,17,18,20,21,23,24,25))
+library(ROCR)
+p <- predict(model_reduce, newdata=data_test, type="response")
+pr <- prediction(p, data_test$isClicked)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
 
